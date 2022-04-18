@@ -6,10 +6,14 @@ const User = (props) => {
 
     const [enteredName, setEnteredName] = useState('');
     const [enteredAge, setEnteredAge] = useState('');
-    let [errorContent, setErrorContent] = useState('Error');
+    const [isValidName, setIsValidName] = useState(true);
+    const [isValidAge, setIsValidAge] = useState(true);
+
+    let [errorContent, setErrorContent] = useState('');
 
     const submitHandler = (event) => {
         event.preventDefault();
+        setErrorContent('');
         const Data = {
             userName:enteredName,
             userAge:enteredAge
@@ -17,7 +21,11 @@ const User = (props) => {
 
         if (!Data.userAge || Data.userName.length===0) {
             console.log('Inside');
-            setErrorContent('New Error');
+            setErrorContent(<ErrorHandler name={Data.userName} age={Data.userAge}></ErrorHandler>);
+            setEnteredName('');
+            setEnteredAge('');
+            setIsValidAge(true);
+            setIsValidName(true);
             return;
         }
         props.onAddDetails(Data);
@@ -30,14 +38,26 @@ const User = (props) => {
     const nameChangeHandler = (event) => {
         setEnteredName(event.target.value);
         // console.log(event.target.value);
+        if(event.target.value.length === 0) {
+            setIsValidName(false);
+        }
+        else{
+            setIsValidName(true);
+        }
+        setErrorContent('');
     }
 
     const ageChangeHandler =(event) => {
         setEnteredAge(event.target.value);
         // console.log(event.target.value);
+        if(event.target.value.length === 0) {
+            setIsValidAge(false);
+        }
+        else{
+            setIsValidAge(true);
+        }
+        setErrorContent('');
     }
-
-    console.log(errorContent);
     return (
         <div>
             <div>{errorContent}</div>
@@ -45,11 +65,11 @@ const User = (props) => {
                 <div className="form-control">
                     <div className="form-control-input">
                         <label>Name</label>
-                        <input type="text" value={enteredName} onChange={nameChangeHandler}/><br></br>
+                        <input style={{backgroundColor:!isValidName?'red':'transparent'}} type="text" value={enteredName} onChange={nameChangeHandler}/><br></br>
                     </div>
                     <div className="form-control-input">
                         <label>Age</label>
-                        <input type="number" value={enteredAge} onChange={ageChangeHandler}/><br></br><br></br>
+                        <input style={{backgroundColor:!isValidAge?'red':'transparent'}} type="number" value={enteredAge} onChange={ageChangeHandler}/><br></br><br></br>
                     </div>
                     <div className="form-control-button">
                         <button type="submit">Add</button>
